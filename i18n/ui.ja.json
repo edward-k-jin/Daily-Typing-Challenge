@@ -1,0 +1,16 @@
+{
+    "ui": {
+        "title": "Daily Typing Challenge",
+        "restart": "リスタート",
+        "resetRecords": "記録をリセット",
+        "pressEnter": "Enterキーで送信",
+        "statPlayed": "プレイ回数",
+        "statBest": "ベストタイム",
+        "statLast": "前回のタイム",
+        "changeLangWarning": "言語を変更すると現在の進行状況がリセットされます。よろしいですか？",
+        "errorMismatch": "文章が一致しません。",
+        "inputPlaceholder": "文章を正確に入力してください...",
+        "stage": "ステージ",
+        "completed": "完了！"
+    }
+}

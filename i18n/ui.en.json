@@ -1,0 +1,16 @@
+{
+    "ui": {
+        "title": "Daily Typing Challenge",
+        "restart": "Restart",
+        "resetRecords": "Reset Records",
+        "pressEnter": "Press Enter to submit",
+        "statPlayed": "Played",
+        "statBest": "Best Time",
+        "statLast": "Last Time",
+        "changeLangWarning": "Changing the language will reset your current progress. Continue?",
+        "errorMismatch": "Incorrect quote.",
+        "inputPlaceholder": "Type the quote exactly...",
+        "stage": "Stage",
+        "completed": "Completed!"
+    }
+}
