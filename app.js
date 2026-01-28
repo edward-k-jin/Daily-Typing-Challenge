@@ -64,12 +64,49 @@ async function loadResources(lang) {
         const quotesData = await quotesRes.json();
 
         STATE.ui = uiData.ui;
-        STATE.quotes = quotesData.stages;
+        // Handle flattened structure: quotesData.sentences
+        // Store all available quotes
+        STATE.allQuotes = quotesData.sentences || [];
+
+        // Select 3 for the day immediately after loading
+        selectDailyQuotes();
 
         applyUITranslations();
     } catch (e) {
         console.error("Failed to load resources:", e);
         UI_ELEMENTS.feedback.textContent = "Error loading data. Please refresh.";
+    }
+}
+
+function selectDailyQuotes() {
+    // Select 3 unique quotes based on date and language
+    if (!STATE.allQuotes || STATE.allQuotes.length === 0) {
+        STATE.dailyQuotes = ["No quotes available.", "No quotes available.", "No quotes available."];
+        return;
+    }
+
+    const seedString = getKSTDateString() + STATE.language;
+    // We need 3 distinct sentences.
+    // Use the seed to create a PRNG, then Fisher-Yates shuffle indices.
+
+    // Create PRNG
+    const prng = createSeededRandom(seedString);
+
+    // Create available indices
+    const indices = Array.from({ length: STATE.allQuotes.length }, (_, i) => i);
+
+    // Shuffle indices (partial shuffle for first 3 is enough)
+    for (let i = 0; i < 3 && i < indices.length; i++) {
+        const j = i + Math.floor(prng() * (indices.length - i));
+        [indices[i], indices[j]] = [indices[j], indices[i]];
+    }
+
+    // Pick top 3
+    // Wrap around if fewer than 3 available (edge case)
+    STATE.dailyQuotes = [];
+    for (let i = 0; i < TOTAL_STAGES; i++) {
+        const idx = indices[i % indices.length];
+        STATE.dailyQuotes.push(STATE.allQuotes[idx]);
     }
 }
 
@@ -135,10 +172,8 @@ function updateStageUI() {
         return;
     }
 
-    // Select Quote using KST Date + Stage + Language as Seed
-    const seedString = getKSTDateString() + STATE.language + STATE.stage;
-    const quoteIndex = hashStringToIndex(seedString, STATE.quotes[STATE.stage].length);
-    STATE.currentQuote = STATE.quotes[STATE.stage][quoteIndex];
+    // Use pre-selected daily quotes
+    STATE.currentQuote = STATE.dailyQuotes[STATE.stage];
 
     UI_ELEMENTS.quoteDisplay.textContent = STATE.currentQuote;
     UI_ELEMENTS.currentStage.textContent = STATE.stage + 1;
@@ -438,25 +473,19 @@ function getKSTDateString() {
 
 // Simple seeded random to pick daily quote index
 // Mulberry32 algorithm
-function hashStringToIndex(seedStr, maxIndex) {
+// PRNG based on Mulberry32
+function createSeededRandom(seedStr) {
     let h = 0xdeadbeef;
     for (let i = 0; i < seedStr.length; i++) {
         h = Math.imul(h ^ seedStr.charCodeAt(i), 2654435761);
     }
 
-    // Create a PRNG function from the hash
-    const rand = function () {
+    return function () {
         h += 0x6D2B79F5;
         let t = Math.imul(h ^ (h >>> 15), 1 | h);
         t = t + Math.imul(t ^ (t >>> 7), 61 | t) ^ t;
         return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
     }
-
-    // Warm up
-    rand(); rand();
-
-    const randomVal = rand();
-    return Math.floor(randomVal * maxIndex);
 }
 
 /**
