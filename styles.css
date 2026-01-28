@@ -32,6 +32,12 @@
     --font-mono: 'SFMono-Regular', Consolas, monospace;
 }
 
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
 body {
     font-family: var(--font-main);
     background-color: var(--bg-page);
@@ -55,50 +61,7 @@ body {
     width: 100%;
 }
 
-/* Header - Ultra Minimal */
-.main-header {
-    display: flex;
-    justify-content: center;
-    /* Center logo for premium feel */
-    margin-bottom: 3rem;
-    position: relative;
-}
-
-.logo {
-    font-size: 2rem;
-    font-weight: 800;
-    letter-spacing: -0.5px;
-    color: var(--text-primary);
-    text-transform: uppercase;
-    background: linear-gradient(135deg, var(--text-primary) 0%, var(--text-secondary) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    opacity: 0.9;
-}
-
-/* Layout - CSS Grid for Desktop */
-.main-content {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-}
-
-/* Badge - Pill Design */
-.badge {
-    position: absolute;
-    top: 1.5rem;
-    left: 1.5rem;
-    background: var(--text-primary);
-    color: white;
-    font-size: 0.7rem;
-    font-weight: 700;
-    padding: 0.4rem 0.8rem;
-    border-radius: 999px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    z-index: 10;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
+/* ... (skipping unchanged parts) ... */
 
 /* Language Selector - Floating & Glassy */
 .language-selector {
@@ -111,17 +74,27 @@ body {
 .language-selector select {
     appearance: none;
     -webkit-appearance: none;
-    padding: 0.4rem 1rem;
+    padding: 0.4rem 2.2rem 0.4rem 1rem;
+    /* Right padding for arrow */
     border-radius: 999px;
     border: 1px solid var(--border);
     background-color: rgba(255, 255, 255, 0.8);
     backdrop-filter: blur(8px);
+
+    /* Chevron Icon */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236B7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.6rem center;
+    background-size: 1rem;
+
     color: var(--text-secondary);
     font-size: 0.8rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
     text-align: center;
+    outline: none;
+    box-shadow: var(--shadow-sm);
 }
 
 .language-selector select:hover {
