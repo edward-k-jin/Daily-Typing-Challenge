@@ -78,37 +78,73 @@ async function loadResources(lang) {
     }
 }
 
+// ... imports or setup if any
+
 function selectDailyQuotes() {
-    // Select 3 unique quotes based on date and language
     if (!STATE.allQuotes || STATE.allQuotes.length === 0) {
         STATE.dailyQuotes = ["No quotes available.", "No quotes available.", "No quotes available."];
         return;
     }
 
-    const seedString = getKSTDateString() + STATE.language;
-    // We need 3 distinct sentences.
-    // Use the seed to create a PRNG, then Fisher-Yates shuffle indices.
+    // 1. Calculate how many days passed since a fixed epoch (e.g. 2025-01-01)
+    const daysPassed = getDaysSinceFixedEpoch();
 
-    // Create PRNG
-    const prng = createSeededRandom(seedString);
+    // 2. We consume 3 quotes per day. Calculate the global start index.
+    //    Stream: [ Day0_Q1, Day0_Q2, Day0_Q3, Day1_Q1, ... ]
+    const globalStartIndex = daysPassed * 3;
 
-    // Create available indices
-    const indices = Array.from({ length: STATE.allQuotes.length }, (_, i) => i);
-
-    // Shuffle indices (partial shuffle for first 3 is enough)
-    for (let i = 0; i < 3 && i < indices.length; i++) {
-        const j = i + Math.floor(prng() * (indices.length - i));
-        [indices[i], indices[j]] = [indices[j], indices[i]];
-    }
-
-    // Pick top 3
-    // Wrap around if fewer than 3 available (edge case)
     STATE.dailyQuotes = [];
-    for (let i = 0; i < TOTAL_STAGES; i++) {
-        const idx = indices[i % indices.length];
-        STATE.dailyQuotes.push(STATE.allQuotes[idx]);
+    for (let i = 0; i < 3; i++) {
+        STATE.dailyQuotes.push(getSentenceAtGlobalIndex(globalStartIndex + i));
     }
 }
+
+// Retrieve a sentence from the infinite stream of shuffled decks
+function getSentenceAtGlobalIndex(globalIndex) {
+    const total = STATE.allQuotes.length;
+    // Which "Deck" (cycle) are we in?
+    const deckIndex = Math.floor(globalIndex / total);
+    // Which position within that deck?
+    const localIndex = globalIndex % total;
+
+    // Seed for this specific deck depends on Language + DeckIndex
+    // This ensures that when we enter a new deck (cycle), it's reshuffled randomly
+    const seed = `${STATE.language}_deck_${deckIndex}`;
+
+    // Create a shuffled view of indices for this deck
+    const shuffledIndices = getShuffledIndices(total, seed);
+
+    return STATE.allQuotes[shuffledIndices[localIndex]];
+}
+
+function getShuffledIndices(length, seed) {
+    // Create array [0, 1, ..., length-1]
+    const indices = Array.from({ length }, (_, i) => i);
+    const prng = createSeededRandom(seed);
+
+    // Fisher-Yates Shuffle
+    for (let i = length - 1; i > 0; i--) {
+        const j = Math.floor(prng() * (i + 1));
+        [indices[i], indices[j]] = [indices[j], indices[i]];
+    }
+    return indices;
+}
+
+function getDaysSinceFixedEpoch() {
+    const kstNow = new Date();
+    // Use KST time
+    const kstString = kstNow.toLocaleDateString("en-CA", { timeZone: "Asia/Seoul" });
+    const today = new Date(kstString);
+    const epoch = new Date("2025-01-01");
+
+    // Difference in time
+    const diffTime = today - epoch;
+    // Difference in days (floor to be safe, though time should be 00:00:00 locally)
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+    return diffDays >= 0 ? diffDays : 0; // Fallback if system time is weirdly before epoch
+}
+// ... remainder of applyUITranslations
 
 function applyUITranslations() {
     const ui = STATE.ui;
