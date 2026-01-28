@@ -179,6 +179,32 @@ function applyUITranslations() {
     }
 
     // Stats Labels (Static parts are updated, dynamic parts handled in updateStatsUI)
+    // Info Section
+    if (ui.infoSection) {
+        const infoTitle = document.getElementById('info-title');
+        if (infoTitle) infoTitle.textContent = ui.infoSection.title;
+
+        if (ui.infoSection.items && Array.isArray(ui.infoSection.items)) {
+            ui.infoSection.items.forEach((item, index) => {
+                const titleEl = document.getElementById(`info-item-${index}-title`);
+                const descEl = document.getElementById(`info-item-${index}-desc`);
+                if (titleEl) titleEl.textContent = item.title;
+                if (descEl) descEl.textContent = item.desc;
+            });
+        }
+    }
+
+    // Footer
+    if (ui.footer) {
+        const footerCopyright = document.getElementById('footer-copyright');
+        const footerPrivacy = document.getElementById('footer-privacy');
+        const footerTerms = document.getElementById('footer-terms');
+
+        if (footerCopyright) footerCopyright.textContent = ui.footer.copyright;
+        if (footerPrivacy) footerPrivacy.textContent = ui.footer.privacy;
+        if (footerTerms) footerTerms.textContent = ui.footer.terms;
+    }
+
     updateStatsUI();
 }
 

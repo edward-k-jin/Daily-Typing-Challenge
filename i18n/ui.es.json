@@ -24,6 +24,28 @@
                 "Se publica una nueva frase al día. La frase de hoy solo está disponible hoy.",
                 "Si confías en tu velocidad, ¡acepta el desafío!"
             ]
+        },
+        "infoSection": {
+            "title": "Why Daily Typing Challenge?",
+            "items": [
+                {
+                    "title": "Build Muscle Memory & Speed",
+                    "desc": "Consistent daily practice is the key to mastering touch typing. Our algorithm selects unique sentences every day to prevent rote memorization and ensure you are truly reading and processing text."
+                },
+                {
+                    "title": "Multilingual Proficiency",
+                    "desc": "By typing quotes in English, Korean, Japanese, Spanish, and French, you not only improve your WPM but also familiarize yourself with diverse sentence structures and vocabulary naturally."
+                },
+                {
+                    "title": "Scientific Ranking System",
+                    "desc": "Unlike simple average scores, our ranking is based on a Gaussian Normal Distribution of global typing speeds. Your \"Top %\" reflects your true standing among typists worldwide, providing a realistic goal for improvement."
+                }
+            ]
+        },
+        "footer": {
+            "privacy": "Privacy Policy",
+            "terms": "Terms of Service",
+            "copyright": "© 2026 Daily Typing Challenge. All rights reserved."
         }
     }
 }
