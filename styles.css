@@ -187,6 +187,48 @@ body {
     max-width: 580px;
     position: relative;
     margin-bottom: 1.5rem;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* ... (lines omitted) ... */
+
+/* Mobile Tweaks */
+@media (max-width: 768px) {
+    .app-container {
+        padding: 1rem;
+    }
+
+    .game-section {
+        padding: 5rem 1rem 3rem;
+        /* Increased top padding for badges */
+    }
+
+    .timer-display {
+        font-size: 3rem;
+    }
+
+    .main-header {
+        margin-bottom: 1.5rem;
+    }
+
+    .logo {
+        font-size: 1.5rem;
+    }
+
+    .badge {
+        top: 1rem;
+        left: 1rem;
+        scale: 0.9;
+        transform-origin: top left;
+    }
+
+    .language-selector {
+        top: 1rem;
+        right: 1rem;
+        scale: 0.9;
+        transform-origin: top right;
+    }
 }
 
 .typing-input {
