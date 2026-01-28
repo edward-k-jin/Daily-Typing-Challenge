@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Quote Typing Challenge</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=Noto+Sans+KR:wght@400;500;700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="main-header">
+            <h1 class="logo">Daily Typing Challenge</h1>
+            <div class="language-selector">
+                <select id="language-dropdown">
+                    <option value="en">English</option>
+                    <option value="ko">한국어</option>
+                    <option value="ja">日本語</option>
+                    <option value="es">Español</option>
+                    <option value="fr">Français</option>
+                </select>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <!-- Game Section -->
+            <section class="game-section">
+                <div class="timer-display" id="timer">0.00</div>
+
+                <div class="stage-indicator">
+                    <span id="current-stage">1</span> / <span id="total-stages">3</span>
+                </div>
+
+                <div class="quote-container">
+                    <div class="quote-text" id="quote-display">
+                        <!-- Quote will be injected here -->
+                        Loading daily quote...
+                    </div>
+                </div>
+
+                <div class="input-container">
+                    <input type="text" id="typing-input" class="typing-input" placeholder="Type the quote exactly..."
+                        autocomplete="off" spellcheck="false">
+                    <div class="input-hint" id="input-hint">Press Enter to submit</div>
+                </div>
+
+                <div class="feedback-message" id="feedback-message"></div>
+
+                <div class="game-controls">
+                    <button id="restart-btn" class="btn btn-secondary">Restart</button>
+                    <!-- "Reset records" is usually better placed in stats, but PRD puts buttons in game area or near it. 
+                         Let's put it in the stats panel for better UX, or keep strictly to PRD. 
+                         PRD says: "Buttons: Restart (reset current run), Reset records". 
+                         I will put Reset records in the records panel as it makes more sense there, 
+                         or maybe a small link below. Let's stick to the game area for now as per PRD but visually distinct. -->
+                </div>
+            </section>
+
+            <!-- Statistics Section -->
+            <aside class="stats-section">
+                <div class="stats-header">
+                    <h2>Statistics</h2>
+                    <button id="reset-records-btn" class="btn btn-text btn-danger-text">Reset All Records</button>
+                </div>
+
+                <div class="stats-card current-lang-stats">
+                    <h3 id="stats-lang-title">English</h3>
+                    <div class="stat-row">
+                        <span class="stat-label">Played</span>
+                        <span class="stat-value" id="stat-play-count">0</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Best Time</span>
+                        <span class="stat-value" id="stat-best-time">-</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Last Time</span>
+                        <span class="stat-value" id="stat-last-time">-</span>
+                    </div>
+                </div>
+
+                <div class="all-records-panel" id="all-records-panel">
+                    <!-- Dynamic list of all languages -->
+                </div>
+            </aside>
+        </main>
+    </div>
+
+    <script type="module" src="app.js"></script>
+</body>
+
+</html>
