@@ -11,6 +11,19 @@
         "errorMismatch": "Frase incorrecta.",
         "inputPlaceholder": "Escribe la frase exactamente...",
         "stage": "Etapa",
-        "completed": "¡Completado!"
+        "completed": "¡Completado!",
+        "badge": "Desafío de Hoy",
+        "guide": {
+            "title": "Cómo Jugar",
+            "items": [
+                "Escribe la frase exactamente como se muestra.",
+                "Debes escribir los espacios y símbolos con precisión.",
+                "El temporizador comienza al escribir la primera letra. Presiona Enter para enviar.",
+                "No podrás avanzar si hay un solo error.",
+                "Completa las 3 etapas para ver tu resultado.",
+                "Se publica una nueva frase al día. La frase de hoy solo está disponible hoy.",
+                "Si confías en tu velocidad, ¡acepta el desafío!"
+            ]
+        }
     }
 }

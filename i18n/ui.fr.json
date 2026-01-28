@@ -11,6 +11,19 @@
         "errorMismatch": "Phrase incorrecte.",
         "inputPlaceholder": "Tapez la citation exactement...",
         "stage": "Étape",
-        "completed": "Terminé !"
+        "completed": "Terminé !",
+        "badge": "Défi du Jour",
+        "guide": {
+            "title": "Comment Jouer",
+            "items": [
+                "Tapez la phrase exactement comme elle apparaît.",
+                "Vous devez respecter les espaces et la ponctuation à la lettre.",
+                "Le minuteur démarre à la première frappe. Appuyez sur Entrée pour valider.",
+                "Vous ne pouvez pas passer à l'étape suivante en cas d'erreur.",
+                "Terminez les 3 étapes pour voir votre résultat.",
+                "Une nouvelle citation est publiée chaque jour. Le défi d'aujourd'hui n'est disponible qu'aujourd'hui.",
+                "Si vous avez confiance en votre vitesse, relevez le défi !"
+            ]
+        }
     }
 }
