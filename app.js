@@ -235,6 +235,7 @@ function saveRecord() {
         playIndex: data.playCount,
         percentile: percentileNum,
         wpm: wpm, // Optional, for reference
+        duration: finalTime, // Saved in seconds (float)
         timestamp: Date.now()
     };
 
@@ -322,26 +323,29 @@ function renderRankingList(records, isKorean) {
         const item = document.createElement('div');
         item.className = 'ranking-item';
 
-        // Format: 1. 15th Try / Top 1.2%
-        // Or cleaner: Rank Badge | 15th Try | Top 1.2%
+        // Format: Rank | Time (MM:SS.ss) | Top %
 
-        // Play Index String
-        let playIndexStr = `${rec.playIndex}`;
-        if (isKorean) {
-            playIndexStr += "번째 완료";
-        } else {
-            // ordinal suffix
-            const j = rec.playIndex % 10,
-                k = rec.playIndex % 100;
-            if (j == 1 && k != 11) {
-                playIndexStr += "st Clear";
-            } else if (j == 2 && k != 12) {
-                playIndexStr += "nd Clear";
-            } else if (j == 3 && k != 13) {
-                playIndexStr += "rd Clear";
+        let timeStr = "";
+        if (rec.duration) {
+            const m = Math.floor(rec.duration / 60);
+            const s = (rec.duration % 60).toFixed(2);
+            // Pad seconds if needed? Actually toFixed(2) gives e.g. "4.50" or "14.50".
+            // If m > 0, we want "1:04.50". If m=0, maybe just "4.50s"?
+            // Let's standardise: "M분 SS.ss초" (KR) or "M:SS.ss" (EN)
+
+            if (isKorean) {
+                if (m > 0) timeStr = `${m}분 ${s}초`;
+                else timeStr = `${s}초`;
             } else {
-                playIndexStr += "th Clear";
+                // Format M:SS.ss
+                const sStr = s < 10 && m > 0 ? "0" + s : s;
+                if (m > 0) timeStr = `${m}:${sStr}`;
+                else timeStr = `${s}s`;
             }
+        } else {
+            // Fallback for old records without duration
+            // Just show Play Index as fallback so user doesn't see empty
+            timeStr = isKorean ? `${rec.playIndex}번째 완료` : `Clear #${rec.playIndex}`;
         }
 
         // Percentile String
@@ -352,7 +356,7 @@ function renderRankingList(records, isKorean) {
         item.innerHTML = `
             <div class="rank-index">${index + 1}</div>
             <div class="rank-details">
-                <span class="rank-try">${playIndexStr}</span>
+                <span class="rank-try">${timeStr}</span>
                 <span class="rank-percent">${percentStr}</span>
             </div>
         `;
