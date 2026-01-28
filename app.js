@@ -246,9 +246,9 @@ function saveRecord() {
     // Sort by percentile (ascending: lower is better)
     data.records.sort((a, b) => a.percentile - b.percentile);
 
-    // Keep top 10
-    if (data.records.length > 10) {
-        data.records = data.records.slice(0, 10);
+    // Keep top 5
+    if (data.records.length > 5) {
+        data.records = data.records.slice(0, 5);
     }
 
     localStorage.setItem(key, JSON.stringify(data));
