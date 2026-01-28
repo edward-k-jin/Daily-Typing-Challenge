@@ -265,7 +265,7 @@ function handleInput(e) {
 function validateSubmission() {
     const inputVal = UI_ELEMENTS.typingInput.value;
 
-    if (inputVal === STATE.currentQuote) {
+    if (normalizeText(inputVal) === normalizeText(STATE.currentQuote)) {
         // Correct
         STATE.totalCharsTyped += inputVal.length;
         STATE.stage++;
@@ -534,6 +534,11 @@ function getKSTDateString() {
     const now = new Date();
     const kstString = now.toLocaleDateString("en-CA", { timeZone: "Asia/Seoul" }); // en-CA gives YYYY-MM-DD
     return kstString;
+}
+
+function normalizeText(text) {
+    // Remove all unicode punctuation and trim whitespace
+    return text.replace(/\p{P}/gu, "").replace(/\s+/g, " ").trim();
 }
 
 // Simple seeded random to pick daily quote index
