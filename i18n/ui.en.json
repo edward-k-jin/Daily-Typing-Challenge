@@ -11,6 +11,19 @@
         "errorMismatch": "Incorrect quote.",
         "inputPlaceholder": "Type the quote exactly...",
         "stage": "Stage",
-        "completed": "Completed!"
+        "completed": "Completed!",
+        "badge": "Today's Challenge",
+        "guide": {
+            "title": "How to Play",
+            "items": [
+                "Type the sentence exactly as shown.",
+                "Pay attention to spaces and punctuation.",
+                "Timer starts on first keypress. Press Enter to submit.",
+                "You cannot proceed if there is even a single error.",
+                "Complete all 3 stages to see your result.",
+                "A new quote is released daily. Today's quote is only for today.",
+                "Challenge yourself if you track your typing speed!"
+            ]
+        }
     }
 }

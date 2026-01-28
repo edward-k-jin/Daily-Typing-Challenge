@@ -17,7 +17,9 @@
     <div class="app-container">
         <!-- Header -->
         <header class="main-header">
-            <h1 class="logo">Daily Typing Challenge</h1>
+            <div class="header-left">
+                <h1 class="logo">Daily Typing Challenge</h1>
+            </div>
             <div class="language-selector">
                 <select id="language-dropdown">
                     <option value="en">English</option>
@@ -31,7 +33,9 @@
 
         <main class="main-content">
             <!-- Game Section -->
+            <!-- Game Section -->
             <section class="game-section">
+                <span id="challenge-badge" class="badge">Today's Challenge</span>
                 <div class="timer-display" id="timer">0.00</div>
 
                 <div class="stage-indicator">
@@ -72,24 +76,28 @@
 
                 <div class="stats-card current-lang-stats">
                     <h3 id="stats-lang-title">English</h3>
-                    <div class="stat-row">
-                        <span class="stat-label">Played</span>
-                        <span class="stat-value" id="stat-play-count">0</span>
-                    </div>
-                    <div class="stat-row">
-                        <span class="stat-label">Best Time</span>
-                        <span class="stat-value" id="stat-best-time">-</span>
-                    </div>
-                    <div class="stat-row">
-                        <span class="stat-label">Last Time</span>
-                        <span class="stat-value" id="stat-last-time">-</span>
+                    <div id="rank-display-container">
+                        <div class="rank-label" id="rank-label">Your Rank</div>
+                        <div class="rank-value" id="rank-value">-</div>
+                        <div class="rank-subtext" id="rank-subtext">Based on global WPM distribution</div>
                     </div>
                 </div>
 
-                <div class="all-records-panel" id="all-records-panel">
-                    <!-- Dynamic list of all languages -->
+                <div class="ranking-board text-content" id="ranking-board">
+                    <h3>Top 10 Records</h3>
+                    <div id="ranking-list" class="ranking-list">
+                        <!-- Dynamic List -->
+                    </div>
                 </div>
+
             </aside>
+
+            <section class="guide-section text-content">
+                <h3 id="guide-title">How to Play</h3>
+                <ul id="guide-list">
+                    <!-- Dynamic List -->
+                </ul>
+            </section>
         </main>
     </div>
 

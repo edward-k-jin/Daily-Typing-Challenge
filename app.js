@@ -7,7 +7,8 @@ const STATE = {
     quotes: [], // Loaded for the current language
     currentQuote: "",
     ui: {}, // UI strings
-    isFinished: false
+    isFinished: false,
+    totalCharsTyped: 0
 };
 
 const UI_ELEMENTS = {
@@ -21,12 +22,15 @@ const UI_ELEMENTS = {
     resetRecordsBtn: document.getElementById('reset-records-btn'),
     langSelect: document.getElementById('language-dropdown'),
     inputHint: document.getElementById('input-hint'),
+    guideTitle: document.getElementById('guide-title'),
+    guideList: document.getElementById('guide-list'),
+    badge: document.getElementById('challenge-badge'),
     statsSection: {
         langTitle: document.getElementById('stats-lang-title'),
-        playCount: document.getElementById('stat-play-count'),
-        bestTime: document.getElementById('stat-best-time'),
-        lastTime: document.getElementById('stat-last-time'),
-        allRecords: document.getElementById('all-records-panel')
+        rankLabel: document.getElementById('rank-label'),
+        rankValue: document.getElementById('rank-value'),
+        rankSubtext: document.getElementById('rank-subtext'),
+        rankingList: document.getElementById('ranking-list')
     }
 };
 
@@ -50,9 +54,10 @@ async function init() {
 async function loadResources(lang) {
     // Parallel fetch
     try {
+        const timestamp = new Date().getTime();
         const [uiRes, quotesRes] = await Promise.all([
-            fetch(`i18n/ui.${lang}.json`),
-            fetch(`sentences/sentences.${lang}.json`)
+            fetch(`i18n/ui.${lang}.json?v=${timestamp}`),
+            fetch(`sentences/sentences.${lang}.json?v=${timestamp}`)
         ]);
 
         const uiData = await uiRes.json();
@@ -78,6 +83,28 @@ function applyUITranslations() {
     UI_ELEMENTS.inputHint.textContent = ui.pressEnter;
     UI_ELEMENTS.typingInput.placeholder = ui.inputPlaceholder || "Type the quote exactly...";
 
+    if (UI_ELEMENTS.badge) UI_ELEMENTS.badge.textContent = ui.badge || "Today's Challenge";
+
+    // Guide Section
+    // Guide Section
+    if (ui.guide) {
+        if (UI_ELEMENTS.guideTitle) UI_ELEMENTS.guideTitle.textContent = ui.guide.title;
+
+        // Re-query to ensure we have the element (in case of DOM updates)
+        const guideList = UI_ELEMENTS.guideList || document.getElementById('guide-list');
+
+        if (guideList) {
+            guideList.innerHTML = "";
+            if (ui.guide.items && Array.isArray(ui.guide.items)) {
+                ui.guide.items.forEach(item => {
+                    const li = document.createElement('li');
+                    li.textContent = item;
+                    guideList.appendChild(li);
+                });
+            }
+        }
+    }
+
     // Stats Labels (Static parts are updated, dynamic parts handled in updateStatsUI)
     updateStatsUI();
 }
@@ -89,6 +116,7 @@ function resetGame() {
     STATE.stage = 0;
     STATE.startTime = null;
     STATE.isFinished = false;
+    STATE.totalCharsTyped = 0;
     clearInterval(STATE.timerInterval);
 
     UI_ELEMENTS.timer.textContent = "0.00";
@@ -142,6 +170,7 @@ function validateSubmission() {
 
     if (inputVal === STATE.currentQuote) {
         // Correct
+        STATE.totalCharsTyped += inputVal.length;
         STATE.stage++;
         if (STATE.stage >= TOTAL_STAGES) {
             STATE.isFinished = true;
@@ -182,25 +211,55 @@ function finishGame() {
 }
 
 /**
- * Statistics
+ * Statistics & Relative Rank Logic
  */
 function saveRecord() {
     const finalTime = parseFloat(UI_ELEMENTS.timer.textContent);
+
+    // Calculate WPM: (Chars / 5) / (Minutes)
+    const wpm = (STATE.totalCharsTyped / 5) / (finalTime / 60);
+
+    // Calculate Percentile (Top X%)
+    const percentile = getPercentile(wpm);
+    const percentileNum = parseFloat(percentile);
+
     const key = `typingStats_${STATE.language}`;
-    let data = JSON.parse(localStorage.getItem(key)) || { playCount: 0, lastTimeMs: null, bestTimeMs: null };
+    // Data structure: { playCount: 0, records: [] }
+    let data = JSON.parse(localStorage.getItem(key)) || { playCount: 0, records: [] };
 
-    data.playCount++;
-    data.lastTimeMs = finalTime;
+    // Increment play count
+    data.playCount = (data.playCount || 0) + 1;
 
-    if (data.bestTimeMs === null || finalTime < data.bestTimeMs) {
-        data.bestTimeMs = finalTime;
+    // Create new record
+    const newRecord = {
+        playIndex: data.playCount,
+        percentile: percentileNum,
+        wpm: wpm, // Optional, for reference
+        timestamp: Date.now()
+    };
+
+    // Add and Sort
+    if (!data.records) data.records = [];
+    data.records.push(newRecord);
+
+    // Sort by percentile (ascending: lower is better)
+    data.records.sort((a, b) => a.percentile - b.percentile);
+
+    // Keep top 10
+    if (data.records.length > 10) {
+        data.records = data.records.slice(0, 10);
     }
 
     localStorage.setItem(key, JSON.stringify(data));
 }
 
 function resetAllRecords() {
-    if (confirm("Are you sure you want to delete all records? / 모든 기록을 삭제하시겠습니까?")) {
+    const isKorean = STATE.language === 'ko';
+    const msg = isKorean
+        ? "정말로 모든 기록을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다."
+        : "Are you sure you want to delete all records? This cannot be undone.";
+
+    if (confirm(msg)) {
         LANGUAGES.forEach(lang => localStorage.removeItem(`typingStats_${lang}`));
         updateStatsUI();
     }
@@ -208,48 +267,147 @@ function resetAllRecords() {
 
 function updateStatsUI() {
     const key = `typingStats_${STATE.language}`;
-    const data = JSON.parse(localStorage.getItem(key)) || { playCount: 0, lastTimeMs: null, bestTimeMs: null };
+    // Fallback for migration or empty
+    const data = JSON.parse(localStorage.getItem(key)) || { playCount: 0, records: [] };
     const ui = STATE.ui;
 
-    // Current Stats Card
     UI_ELEMENTS.statsSection.langTitle.textContent = getLanguageName(STATE.language);
-    UI_ELEMENTS.statsSection.playCount.previousElementSibling.textContent = ui.statPlayed;
-    UI_ELEMENTS.statsSection.playCount.textContent = data.playCount;
 
-    UI_ELEMENTS.statsSection.bestTime.previousElementSibling.textContent = ui.statBest;
-    UI_ELEMENTS.statsSection.bestTime.textContent = data.bestTimeMs !== null ? data.bestTimeMs.toFixed(2) + "s" : "-";
+    const isKorean = STATE.language === 'ko';
 
-    UI_ELEMENTS.statsSection.lastTime.previousElementSibling.textContent = ui.statLast;
-    UI_ELEMENTS.statsSection.lastTime.textContent = data.lastTimeMs !== null ? data.lastTimeMs.toFixed(2) + "s" : "-";
+    // 1. Main Best Rank Display
+    // Determine best rank from records[0] (since it's sorted) or bestPercentile if using old data (simple migration check)
+    let bestPercentile = null;
+    if (data.records && data.records.length > 0) {
+        bestPercentile = data.records[0].percentile;
+    } else if (data.bestPercentile) {
+        // Migration support for the data we just created in previous step
+        bestPercentile = data.bestPercentile;
+    }
 
-    // All Records Panel
-    renderAllRecords();
+    if (bestPercentile !== null) {
+        let displayVal = bestPercentile < 0.1 ? "<0.1" : bestPercentile.toFixed(1);
+        if (displayVal.endsWith('.0')) displayVal = displayVal.slice(0, -2);
+
+        const prefix = isKorean ? "상위 " : "Top ";
+        const suffix = "%";
+
+        UI_ELEMENTS.statsSection.rankValue.textContent = `${prefix}${displayVal}${suffix}`;
+        UI_ELEMENTS.statsSection.rankValue.classList.add('has-rank');
+    } else {
+        UI_ELEMENTS.statsSection.rankValue.textContent = "-";
+        UI_ELEMENTS.statsSection.rankValue.classList.remove('has-rank');
+    }
+
+    UI_ELEMENTS.statsSection.rankLabel.textContent = isKorean ? "나의 최고 순위" : "Your Best Rank";
+    UI_ELEMENTS.statsSection.rankSubtext.textContent = isKorean ? "(전체 사용자 WPM 분포 기반)" : "(Based on global WPM stats)";
+
+    // 2. Ranking List
+    renderRankingList(data.records || [], isKorean);
 }
 
-function renderAllRecords() {
-    const container = UI_ELEMENTS.statsSection.allRecords;
-    container.innerHTML = ""; // Clear
+function renderRankingList(records, isKorean) {
+    const listContainer = UI_ELEMENTS.statsSection.rankingList;
+    listContainer.innerHTML = ""; // Clear
 
-    LANGUAGES.forEach(lang => {
-        const key = `typingStats_${lang}`;
-        const data = JSON.parse(localStorage.getItem(key));
-        if (data) {
-            const el = document.createElement('div');
-            el.className = 'mini-stat-row';
-            if (lang === STATE.language) el.classList.add('current');
+    if (records.length === 0) {
+        const emptyMsg = document.createElement('div');
+        emptyMsg.className = 'empty-rank-msg';
+        emptyMsg.textContent = isKorean ? "기록이 없습니다." : "No records yet.";
+        listContainer.appendChild(emptyMsg);
+        return;
+    }
 
-            // Format: [KO] Best: 12.34s | Plays: 5
-            el.innerHTML = `
-                <span class="lang-tag">${lang.toUpperCase()}</span>
-                <span class="stat-info">
-                   Best: <b>${data.bestTimeMs !== null ? data.bestTimeMs.toFixed(2) + 's' : '-'}</b>
-                   <span class="divider">|</span>
-                   Plays: ${data.playCount}
-                </span>
-            `;
-            container.appendChild(el);
+    records.forEach((rec, index) => {
+        const item = document.createElement('div');
+        item.className = 'ranking-item';
+
+        // Format: 1. 15th Try / Top 1.2%
+        // Or cleaner: Rank Badge | 15th Try | Top 1.2%
+
+        // Play Index String
+        let playIndexStr = `${rec.playIndex}`;
+        if (isKorean) {
+            playIndexStr += "번째 시도";
+        } else {
+            // ordinal suffix
+            const j = rec.playIndex % 10,
+                k = rec.playIndex % 100;
+            if (j == 1 && k != 11) {
+                playIndexStr += "st Try";
+            } else if (j == 2 && k != 12) {
+                playIndexStr += "nd Try";
+            } else if (j == 3 && k != 13) {
+                playIndexStr += "rd Try";
+            } else {
+                playIndexStr += "th Try";
+            }
         }
+
+        // Percentile String
+        let pVal = rec.percentile < 0.1 ? "<0.1" : rec.percentile.toFixed(1);
+        if (pVal.endsWith('.0')) pVal = pVal.slice(0, -2);
+        const percentStr = isKorean ? `상위 ${pVal}%` : `Top ${pVal}%`;
+
+        item.innerHTML = `
+            <div class="rank-index">${index + 1}</div>
+            <div class="rank-details">
+                <span class="rank-try">${playIndexStr}</span>
+                <span class="rank-percent">${percentStr}</span>
+            </div>
+        `;
+        listContainer.appendChild(item);
     });
+}
+
+// Gaussian (Normal) Distribution CDF
+function calculateNormalCDF(x, mean, stdDev) {
+    return 0.5 * (1 + Erf((x - mean) / (stdDev * Math.sqrt(2))));
+}
+
+function Erf(x) {
+    // Approximation of the error function
+    // constants
+    const a1 = 0.254829592;
+    const a2 = -0.284496736;
+    const a3 = 1.421413741;
+    const a4 = -1.453152027;
+    const a5 = 1.061405429;
+    const p = 0.3275911;
+
+    // Save the sign of x
+    let sign = 1;
+    if (x < 0) {
+        sign = -1;
+    }
+    x = Math.abs(x);
+
+    // A&S formula 7.1.26
+    const t = 1.0 / (1.0 + p * x);
+    const y = 1.0 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * Math.exp(-x * x);
+
+    return sign * y;
+}
+
+function getPercentile(wpm) {
+    // Mean 40, SD 15
+    // Ranking is inverted: Higher WPM -> Lower Percentile (Top 1% is better than Top 99%)
+    // CDF gives probability that a random variable is LESS than x.
+    // So if WPM is high, CDF is close to 1 (e.g. 0.99).
+    // We want "Top (1 - CDF) * 100".
+
+    const mean = 40;
+    const stdDev = 15;
+    const cdf = calculateNormalCDF(wpm, mean, stdDev);
+
+    // Top % = (1 - cdf) * 100
+    let topPercent = (1 - cdf) * 100;
+
+    // Clamp to reasonable range (e.g. 0.01% - 99.99%)
+    if (topPercent < 0.01) topPercent = 0.01;
+    if (topPercent > 99.9) topPercent = 99.9;
+
+    return topPercent.toString(); // Return as string number
 }
 
 function getLanguageName(code) {
