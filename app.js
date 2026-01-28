@@ -328,19 +328,19 @@ function renderRankingList(records, isKorean) {
         // Play Index String
         let playIndexStr = `${rec.playIndex}`;
         if (isKorean) {
-            playIndexStr += "번째 시도";
+            playIndexStr += "번째 완료";
         } else {
             // ordinal suffix
             const j = rec.playIndex % 10,
                 k = rec.playIndex % 100;
             if (j == 1 && k != 11) {
-                playIndexStr += "st Try";
+                playIndexStr += "st Clear";
             } else if (j == 2 && k != 12) {
-                playIndexStr += "nd Try";
+                playIndexStr += "nd Clear";
             } else if (j == 3 && k != 13) {
-                playIndexStr += "rd Try";
+                playIndexStr += "rd Clear";
             } else {
-                playIndexStr += "th Try";
+                playIndexStr += "th Clear";
             }
         }
 
