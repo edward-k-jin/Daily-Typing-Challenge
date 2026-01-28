@@ -26,25 +26,25 @@
             ]
         },
         "infoSection": {
-            "title": "Why Daily Typing Challenge?",
+            "title": "Daily Typing Challengeを選ぶ理由",
             "items": [
                 {
-                    "title": "Build Muscle Memory & Speed",
-                    "desc": "Consistent daily practice is the key to mastering touch typing. Our algorithm selects unique sentences every day to prevent rote memorization and ensure you are truly reading and processing text."
+                    "title": "マッスルメモリーとスピードの向上",
+                    "desc": "毎日の継続的な練習は、タッチタイピング習得の鍵です。私たちのアルゴリズムは、単なる暗記を防ぎ、実際に文章を読んで処理する能力を養うために、毎日独自の文章を選定します。"
                 },
                 {
-                    "title": "Multilingual Proficiency",
-                    "desc": "By typing quotes in English, Korean, Japanese, Spanish, and French, you not only improve your WPM but also familiarize yourself with diverse sentence structures and vocabulary naturally."
+                    "title": "多言語能力の向上",
+                    "desc": "英語、韓国語、日本語、スペイン語、フランス語の名言を入力することで、WPMの向上だけでなく、多様な文構造や語彙に自然と慣れ親しむことができます。"
                 },
                 {
-                    "title": "Scientific Ranking System",
-                    "desc": "Unlike simple average scores, our ranking is based on a Gaussian Normal Distribution of global typing speeds. Your \"Top %\" reflects your true standing among typists worldwide, providing a realistic goal for improvement."
+                    "title": "科学的なランキングシステム",
+                    "desc": "単純な平均スコアではなく、世界的なタイピング速度の正規分布に基づいたランキングを採用しています。「上位％」は、世界中のタイピストの中でのあなたの実際の位置を示し、改善のための現実的な目標を提供します。"
                 }
             ]
         },
         "footer": {
-            "privacy": "Privacy Policy",
-            "terms": "Terms of Service",
+            "privacy": "プライバシーポリシー",
+            "terms": "利用規約",
             "copyright": "© 2026 Daily Typing Challenge. All rights reserved."
         }
     }
