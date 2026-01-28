@@ -327,12 +327,15 @@ function saveRecord() {
 
 function resetAllRecords() {
     const isKorean = STATE.language === 'ko';
+
+    // Updated message to specify "current language"
     const msg = isKorean
-        ? "정말로 모든 기록을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다."
-        : "Are you sure you want to delete all records? This cannot be undone.";
+        ? "현재 언어의 모든 기록을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다."
+        : "Are you sure you want to delete records for the current language? This cannot be undone.";
 
     if (confirm(msg)) {
-        LANGUAGES.forEach(lang => localStorage.removeItem(`typingStats_${lang}`));
+        // Reset only current language
+        localStorage.removeItem(`typingStats_${STATE.language}`);
         updateStatsUI();
     }
 }
