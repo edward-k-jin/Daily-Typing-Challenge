@@ -24,4 +24,35 @@
       <changefreq>monthly</changefreq>
       <priority>0.3</priority>
    </url>
+   <!-- Language Versions -->
+   <url>
+      <loc>https://dailytypingchallenge.com/?lang=en</loc>
+      <lastmod>2026-01-31</lastmod>
+      <changefreq>daily</changefreq>
+      <priority>0.8</priority>
+   </url>
+   <url>
+      <loc>https://dailytypingchallenge.com/?lang=ko</loc>
+      <lastmod>2026-01-31</lastmod>
+      <changefreq>daily</changefreq>
+      <priority>0.8</priority>
+   </url>
+   <url>
+      <loc>https://dailytypingchallenge.com/?lang=ja</loc>
+      <lastmod>2026-01-31</lastmod>
+      <changefreq>daily</changefreq>
+      <priority>0.8</priority>
+   </url>
+   <url>
+      <loc>https://dailytypingchallenge.com/?lang=es</loc>
+      <lastmod>2026-01-31</lastmod>
+      <changefreq>daily</changefreq>
+      <priority>0.8</priority>
+   </url>
+   <url>
+      <loc>https://dailytypingchallenge.com/?lang=fr</loc>
+      <lastmod>2026-01-31</lastmod>
+      <changefreq>daily</changefreq>
+      <priority>0.8</priority>
+   </url>
 </urlset>

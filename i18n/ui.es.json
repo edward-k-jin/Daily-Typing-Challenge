@@ -1,6 +1,9 @@
 {
     "ui": {
         "title": "Daily Typing Challenge",
+        "metaTitle": "Daily Typing Challenge - Práctica de Mecanografía Multilingüe",
+        "metaDescription": "Mejora tu velocidad de escritura con citas diarias en inglés, coreano, japonés, español y francés. Comprueba tu ranking global.",
+        "geoKeywords": "mecanografía, test de velocidad, aprender a escribir, mecanografía en inglés, mecanografía en coreano",
         "restart": "Reiniciar",
         "resetRecords": "Restablecer registros",
         "pressEnter": "Presiona Enter para enviar",

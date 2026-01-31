@@ -1,6 +1,9 @@
 {
     "ui": {
         "title": "Daily Typing Challenge",
+        "metaTitle": "Daily Typing Challenge - 多言語タイピング練習 & スピードテスト",
+        "metaDescription": "英語、韓国語、日本語、スペイン語、フランス語の名言で毎日タイピング練習。あなたのWPMと世界ランキングを確認しましょう。",
+        "geoKeywords": "タイピング練習, タッチタイピング, タイピングゲーム, 英語タイピング, 韓国語タイピング, タイピング速度",
         "restart": "リスタート",
         "resetRecords": "記録をリセット",
         "pressEnter": "Enterキーで送信",

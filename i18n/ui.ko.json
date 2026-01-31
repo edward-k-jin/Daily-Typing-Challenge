@@ -1,6 +1,9 @@
 {
     "ui": {
         "title": "Daily Typing Challenge",
+        "metaTitle": "Daily Typing Challenge - 다국어 타자 연습 & 타이핑 속도 측정",
+        "metaDescription": "매일 새로운 영어, 한국어, 일본어, 프랑스어, 스페인어 명언으로 타자 연습을 하세요. 당신의 타이핑 속도(WPM)와 전 세계 랭킹을 확인해보세요.",
+        "geoKeywords": "타자 연습, 한글 타자 연습, 영타 연습, 타이핑 속도 측정, 타자 검정, 일본어 타자, 외국어 학습",
         "restart": "다시 시작",
         "resetRecords": "기록 초기화",
         "pressEnter": "Enter를 눌러 제출",

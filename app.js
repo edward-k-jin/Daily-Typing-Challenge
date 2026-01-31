@@ -148,7 +148,29 @@ function getDaysSinceFixedEpoch() {
 
 function applyUITranslations() {
     const ui = STATE.ui;
-    document.title = ui.title || "DailyType";
+
+
+    // Dynamic SEO Metadata Updates
+    document.title = ui.metaTitle || ui.title || "Daily Typing Challenge";
+
+    // Meta Description
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) metaDesc.setAttribute('content', ui.metaDescription || "");
+
+    // Open Graph
+    const ogTitle = document.querySelector('meta[property="og:title"]');
+    if (ogTitle) ogTitle.setAttribute('content', ui.metaTitle || ui.title);
+
+    const ogDesc = document.querySelector('meta[property="og:description"]');
+    if (ogDesc) ogDesc.setAttribute('content', ui.metaDescription || "");
+
+    // Keywords (GEO)
+    const metaKeywords = document.querySelector('meta[name="keywords"]');
+    if (metaKeywords && ui.geoKeywords) metaKeywords.setAttribute('content', ui.geoKeywords);
+
+    // Update JSON-LD if present (GEO)
+    updateJsonLd(ui);
+
     document.querySelector('.logo').textContent = ui.title || "DailyType";
 
     UI_ELEMENTS.restartBtn.textContent = ui.restart;
@@ -526,6 +548,23 @@ function getLanguageName(code) {
 }
 
 /**
+ * GEO / JSON-LD Update
+ */
+function updateJsonLd(ui) {
+    const script = document.getElementById('json-ld-data');
+    if (!script) return;
+
+    try {
+        const data = JSON.parse(script.textContent);
+        data.description = ui.metaDescription || data.description;
+        data.applicationCategory = "EducationalApplication";
+        script.textContent = JSON.stringify(data, null, 2);
+    } catch (e) {
+        console.warn("Failed to update JSON-LD", e);
+    }
+}
+
+/**
  * Utilities
  */
 function getKSTDateString() {
@@ -562,16 +601,34 @@ function createSeededRandom(seedStr) {
  * Language Handling
  */
 function loadLanguagePreference() {
-    const stored = localStorage.getItem('typingLanguage');
-    if (stored && LANGUAGES.includes(stored)) {
-        STATE.language = stored;
+    // Priority: URL Param > LocalStorage > Browser
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlLang = urlParams.get('lang');
+
+    if (urlLang && LANGUAGES.includes(urlLang)) {
+        STATE.language = urlLang;
+        // Sync to local storage for future visits
+        localStorage.setItem('typingLanguage', urlLang);
     } else {
-        // More robust detection: Check navigator.languages array first, then navigator.language
-        const langs = navigator.languages || [navigator.language || 'en'];
-        // Check for 'ko', 'ko-KR', 'ko-KR' etc.
-        const isKorean = langs.some(lang => /ko/i.test(lang));
-        STATE.language = isKorean ? 'ko' : 'en';
+        const stored = localStorage.getItem('typingLanguage');
+        if (stored && LANGUAGES.includes(stored)) {
+            STATE.language = stored;
+        } else {
+            const langs = navigator.languages || [navigator.language || 'en'];
+            const isKorean = langs.some(lang => /ko/i.test(lang));
+            STATE.language = isKorean ? 'ko' : 'en';
+        }
     }
+
+    // Update URL if missing (canonicalization)
+    const currentUrlParams = new URLSearchParams(window.location.search);
+    if (currentUrlParams.get('lang') !== STATE.language) {
+        const url = new URL(window.location);
+        url.searchParams.set('lang', STATE.language);
+        // Replace state to avoid breaking back button history chain too much on init
+        window.history.replaceState({}, '', url);
+    }
+
     UI_ELEMENTS.langSelect.value = STATE.language;
 }
 
@@ -585,7 +642,12 @@ async function changeLanguage(newLang) {
         }
     }
 
-    // Save preference and force reload as requested
+    // Update URL and reload (or just reload if we want simple behavior, but let's pushState first)
+    const url = new URL(window.location);
+    url.searchParams.set('lang', newLang);
+    window.history.pushState({}, '', url);
+
+    // Save preference and reload to apply fresh
     localStorage.setItem('typingLanguage', newLang);
     location.reload();
 }

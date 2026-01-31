@@ -1,6 +1,9 @@
 {
     "ui": {
         "title": "Daily Typing Challenge",
+        "metaTitle": "Daily Typing Challenge - Multilingual Typing Practice & Speed Test",
+        "metaDescription": "Improve your typing speed (WPM) with daily quotes in English, Korean, Japanese, Spanish, and French. Track your global ranking percentile.",
+        "geoKeywords": "typing practice, touch typing, wpm test, typing speed test, learn korean typing, japanese typing practice",
         "restart": "Restart",
         "resetRecords": "Reset Records",
         "pressEnter": "Press Enter to submit",

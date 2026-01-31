@@ -1,6 +1,9 @@
 {
     "ui": {
         "title": "Daily Typing Challenge",
+        "metaTitle": "Daily Typing Challenge - Entraînement Dactylographie Multilingue",
+        "metaDescription": "Améliorez votre vitesse de frappe avec des citations quotidiennes en anglais, coréen, japonais, espagnol et français. Suivez votre classement mondial.",
+        "geoKeywords": "dactylographie, test de vitesse, apprendre à taper, vitesse de frappe, clavier coréen, clavier japonais",
         "restart": "Redémarrer",
         "resetRecords": "Réinitialiser",
         "pressEnter": "Appuyez sur Entrée pour valider",
